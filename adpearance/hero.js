@@ -18,43 +18,43 @@ const people = [
         text: "What type of car is Liz looking for?",
         x: w * .15,
         y: h * .55,
-        img: ""
+        img: "img/brunette_woman_png.png"
     },
     {
         text: "Is Malcolm logged in our CRM?",
         x: w * .2,
         y: h * .1,
-        img: ""
+        img: "img/bald_man_png.png"
     },
     {
         text: "What did Hannah search for last month?",
         x: w * .72,
         y: h * .17,
-        img: ""
+        img: "img/shorthaired_woman_png.png"
     },
     {
         text: "Did we return Michael's call?",
         x: w * .6,
         y: h * .6,
-        img: ""
+        img: "img/tan_man_png.png"
     },
     {
         text: "What price range is Gina searching within?",
         x: w * .7,
         y: h * .35,
-        img: ""
+        img: "img/older_brunette_woman_png.png"
     },
     {
         text: "What marketing channels are most profitable this month?",
         x: w * .82,
         y: h * .1,
-        img: ""
+        img: "img/glasses_man_png.png"
     },
     {
         text: "How do our sales compare to others in the area?",
         x: w * .92,
         y: h * .25,
-        img: ""
+        img: "img/greyhaired_man_png.png"
     }
 ].map(o => {
     o.t = Math.random() * 2 * Math.PI;
@@ -65,7 +65,6 @@ const people = [
 });
 
 ////  Canvas  ////
-debugger;
 const svg = d3.select("body").append("svg").attr("width",w).attr("height",h);
 svg.append("rect").attr("width", w).attr("height", h).attr("fill", "#126bcd");
 
@@ -148,11 +147,12 @@ const person_bubble_group = svg.selectAll("g.person")
     .append("g")
     .attr("class", "person");
 person_bubble_group
-    .append("circle")
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y)
-    .attr("r", "18")
-    .attr("fill", "#ddd");
+    .append("image")
+    .attr("xlink:href", d => d.img)
+    .attr("x", d => d.x - 28)
+    .attr("y", d => d.y - 28)
+    .attr("width", 56)
+    .attr("height", 56);
 person_bubble_group
     .append("circle")
     .attr("cx", d => d.x)
