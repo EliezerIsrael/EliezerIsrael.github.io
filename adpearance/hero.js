@@ -122,6 +122,7 @@ const label = svg
     .attr("font-weight", "bold")
     .attr("fill", "white");
 
+/*
 const line = svg
     .append("line")
     .attr("x1", x(4))
@@ -129,6 +130,7 @@ const line = svg
     .attr("x2", x(4))
     .attr("y2", y(point_val()) - 5)
     .attr("stroke", "white");
+*/
 
 const point_value = svg
     .append("text")
@@ -211,7 +213,7 @@ const area_interval = d3.interval(() => {
             const ival = d3.interpolateNumber(old_val, new_val);
 
             return t => {
-                line.attr("y2", iy(t) - 5);
+                // line.attr("y2", iy(t) - 5);
                 point_value.text(ival(t).toLocaleString(undefined, {maximumFractionDigits: 0}));
             }
             //return t => console.log(i(t));
