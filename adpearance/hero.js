@@ -2,56 +2,58 @@
 const h = 500;
 const w = window.innerWidth;
 
-const transition_duration = 1000;
-const pause = 4000;
+const transition_duration = 1500;
+const pause = 6500;
+
+const background_color = "#126bcd";
 
 // Array of objects
 // Each object with keys "title" and "values"
-const data = [{title: "Website Visits", values: [7060309, 7324365, 7656326, 6390242, 5945494, 5938188, 6191221]},
-    {title: "Qualified Sales Prospects", values: [12033, 14268, 16717, 16725, 15671, 15750, 16567]},
-    {title: "Leads Saved", values: [1492, 1697, 2550, 2647, 2302, 2405, 2894]},
-    {title: "Dynamic Emails Sent", values: [173243, 193458, 205296, 216979, 198229, 202007, 215451]},
-    {title: "Inventory Changes Monitored", values: [520082, 469083, 480548, 786334, 567338, 639586, 884198]}];
+const data = [{title: "website visits", values: [7060309, 7324365, 7656326, 6390242, 5945494, 5938188, 6191221]},
+    {title: "qualified sales prospects", values: [12033, 14268, 16717, 16725, 15671, 15750, 16567]},
+    {title: "leads saved", values: [1492, 1697, 2550, 2647, 2302, 2405, 2894]},
+    {title: "dynamic emails sent", values: [173243, 193458, 205296, 216979, 198229, 202007, 215451]},
+    {title: "inventory changes monitored", values: [520082, 469083, 480548, 786334, 567338, 639586, 884198]}];
 
 const people = [
     {
-        text: "What type of car is Liz looking for?",
+        text: ["What type of car", "is Liz looking for?"],
         x: w * .10,
         y: h * .55,
         img: "img/brunette_woman_png.png"
     },
     {
-        text: "Is Malcolm logged in our CRM?",
+        text: ["Is Malcolm logged","in our CRM?"],
         x: w * .15,
         y: h * .1,
         img: "img/bald_man_png.png"
     },
     {
-        text: "What did Hannah search for last month?",
+        text: ["What did Hannah", "search for last month?"],
         x: w * .62,
         y: h * .17,
         img: "img/shorthaired_woman_png.png"
     },
     {
-        text: "Did we return Michael's call?",
-        x: w * .6,
+        text: ["Did we return","Michael's call?"],
+        x: w * .9,
         y: h * .5,
         img: "img/tan_man_png.png"
     },
     {
-        text: "What price range is Gina searching within?",
+        text: ["What price range is Gina","searching within?"],
         x: w * .4,
         y: h * .35,
         img: "img/older_brunette_woman_png.png"
     },
     {
-        text: "What marketing channels are most profitable this month?",
+        text: ["What marketing channels are","most profitable this month?"],
         x: w * .75,
         y: h * .1,
         img: "img/glasses_man_png.png"
     },
     {
-        text: "How do our sales compare to others in the area?",
+        text: ["How do our sales compare","to others in the area?"],
         x: w * .90,
         y: h * .25,
         img: "img/greyhaired_man_png.png"
@@ -66,7 +68,7 @@ const people = [
 
 ////  Canvas  ////
 const svg = d3.select("body").append("svg").attr("width",w).attr("height",h);
-svg.append("rect").attr("width", w).attr("height", h).attr("fill", "#126bcd");
+svg.append("rect").attr("width", w).attr("height", h).attr("fill", background_color);
 
 ////  Data Manipulation  ////
 let current_graph = -1;
@@ -102,9 +104,10 @@ const path = svg.selectAll("path")
 const label = svg
     .append("text")
     .attr("class", "label")
-    .attr("x", w * .7)
+    .attr("x", w * .8)
     .attr("y", h / 2)
     .text("")
+    .attr("text-anchor", "end")
     .attr("font-family", "sans-serif")
     .attr("font-size", "22px")
     .attr("font-weight", "bold")
@@ -119,17 +122,39 @@ const line = svg
     .attr("y2", y(point_val()) - 5)
     .attr("stroke", "white");
 */
-
 const point_value = svg
     .append("text")
     .attr("class", "pointval")
-    .attr("x", w * .7)
+    .attr("x", w * .8)
     .attr("y", h / 2 - 32)
     .text("0")
+    .attr("text-anchor", "end")
     .attr("font-family", "sans-serif")
     .attr("font-size", "40px")
     .attr("font-weight", "bold")
     .attr("fill", "white");
+
+const last_week = svg
+    .append("text")
+    .attr("x", w * .8)
+    .attr("y", h / 2 + 26)
+    .text("last week")
+    .attr("text-anchor", "end")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "16px")
+    .attr("font-weight", "bold")
+    .attr("fill", background_color);
+
+const fifth = svg
+    .append("circle")
+    .attr("cx", x(4))
+    .attr("cy", y(point_val()))
+    .attr("r", 8)
+    .attr("stroke", "#4e8fdb")
+    .attr("stroke-opacity", "0.0")
+    .attr("stroke-width", "2")
+    .attr("fill", "none");
+
 
 const person_bubble_group = svg.selectAll("g.person")
     .data(people)
@@ -164,13 +189,23 @@ person_bubble_group
 person_bubble_group
     .append("text")
     .attr("class", "question")
-    .attr("x", d => d.x - 140)
+    .attr("text-anchor", "middle")
+    .attr("x", d => d.x)
     .attr("y", d => d.y + 40)
-    .text(d => d.text)
+    .text(d => d.text[0])
     .attr("font-family", "sans-serif")
     .attr("font-size", "12px")
     .attr("fill", "#4276d3");
-
+person_bubble_group
+    .append("text")
+    .attr("class", "question")
+    .attr("text-anchor", "middle")
+    .attr("x", d => d.x)
+    .attr("y", d => d.y + 60)
+    .text(d => d.text[1])
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "12px")
+    .attr("fill", "#4276d3");
 
 ////  Animation  ////
 const unit = .1;
@@ -194,7 +229,7 @@ function area_tick() {
     y.domain([d3.min(values()) * .85, d3.max(values())]);
 
     const new_val = point_val();
-    //const new_y = y(point_val());
+    const new_y = y(point_val());
 
     path
         .data(points)
@@ -214,9 +249,38 @@ function area_tick() {
 
     label
         .transition()
-        .delay(d3.max([transition_duration - 350, 0]))
-        .text(title());
+          .duration(200)
+          .style("fill", background_color)
+        .transition()
+          .text("")
+        .transition()
+          .delay(d3.max([transition_duration - 350, 0]))
+          .duration(100)
+          .style("fill", "#fff")
+          .text(title());
+
+    fifth
+        .transition()
+          .duration(200)
+          .attr("stroke-opacity", 0.0)
+        .transition()
+          .delay(transition_duration)
+          .attr("cy", new_y)
+        .transition()
+          .duration(200)
+          .attr("stroke-opacity", 1.0);
+
+    last_week
+        .transition()
+          .duration(200)
+          .style("fill", background_color)
+        .transition()
+          .delay(transition_duration + 200)
+          .duration(200)
+          .style("fill", "#04bcfc");
+
 }
 
-const area_interval = d3.interval(area_tick, pause);
-const bubble_interval = d3.interval(bubble_tick, 66);
+setTimeout(area_tick, 1000);  // Initial transition of area graph
+d3.interval(area_tick, pause);  // All subsequent transitions of area graph
+d3.interval(bubble_tick, 66);
