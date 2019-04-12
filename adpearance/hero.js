@@ -61,6 +61,7 @@ const people = [
 ].map(o => {
     o.t = Math.random() * 2 * Math.PI;
     o.dt = Math.random() * .1 - .05;
+    o.o = Math.random() * 2 * Math.PI; // opacity seed
     o.dx = 0;
     o.dy = 0;
     return o;
@@ -160,7 +161,8 @@ const person_bubble_group = svg.selectAll("g.person")
     .data(people)
     .enter()
     .append("g")
-    .attr("class", "person");
+    .attr("class", "person")
+    .attr("opacity", 0);
 person_bubble_group
     .append("image")
     .attr("xlink:href", d => d.img)
@@ -195,7 +197,7 @@ person_bubble_group
     .text(d => d.text[0])
     .attr("font-family", "sans-serif")
     .attr("font-size", "12px")
-    .attr("fill", "#4276d3");
+    .attr("fill", "#5286e3");
 person_bubble_group
     .append("text")
     .attr("class", "question")
@@ -205,11 +207,11 @@ person_bubble_group
     .text(d => d.text[1])
     .attr("font-family", "sans-serif")
     .attr("font-size", "12px")
-    .attr("fill", "#4276d3");
+    .attr("fill", "#5286e3");
 
 ////  Animation  ////
 const unit = .1;
-
+normalize_opacity  = d => Math.sin(d) / 4 + .75;
 function bubble_tick() {
     people.forEach(person => {
         person.dx = person.dx + (unit * Math.cos(person.t));
@@ -219,6 +221,14 @@ function bubble_tick() {
     svg.selectAll("g.person")
         .data(people)
         .attr("transform", d => `translate(${d.dx},${d.dy})`);
+}
+function bubble_opacity_tick() {
+    people.forEach(person => {
+        person.o = person.o + person.dt;
+    });
+    svg.selectAll("g.person")
+        .data(people)
+        .attr("opacity", d => normalize_opacity(d.o));
 }
 
 function area_tick() {
@@ -284,3 +294,18 @@ function area_tick() {
 setTimeout(area_tick, 1000);  // Initial transition of area graph
 d3.interval(area_tick, pause);  // All subsequent transitions of area graph
 d3.interval(bubble_tick, 66);
+svg.selectAll("g.person")
+    .data(people)
+    .transition()
+    .delay(4000)
+    .duration(8000)
+    .attr("opacity", d => normalize_opacity(d.o));
+setTimeout(function(){d3.interval(bubble_opacity_tick, 66);}, 12000);
+
+/*
+person_bubble_group
+    .transition()
+    .delay(4000)
+    .duration(8000)
+    .attr("opacity", 1.0);
+*/
