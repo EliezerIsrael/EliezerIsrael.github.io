@@ -68,20 +68,6 @@ const people = [
     return o;
 });
 
-function redraw() {
-    w = window.innerWidth;
-
-    x.range([0, w]);
-    svg.attr("width", w);
-    background.attr("width", w);
-    person_bubble_group.select("image").attr("x", d => (w * d.x_factor) - 28);
-    person_bubble_group.selectAll("circle").attr("cx", d => (w * d.x_factor));
-    person_bubble_group.selectAll("text").attr("x", d => (w * d.x_factor));
-    label.attr("x", w * .8);
-    point_value.attr("x", w * .8);
-    last_week.attr("x", w * .8);
-}
-
 ////  Canvas  ////
 const svg = d3.select("body").append("svg").attr("width",w).attr("height",h);
 const background = svg.append("rect").attr("width", w).attr("height", h).attr("fill", background_color);
@@ -228,7 +214,6 @@ function bubble_opacity_tick() {
 
 function area_tick() {
     const old_val = point_val();
-    //const old_y = y(old_val);
 
     current_graph = (current_graph === data.length - 1) ? 0 : current_graph + 1;
     y.domain([d3.min(values()) * .85, d3.max(values())]);
@@ -281,3 +266,17 @@ setTimeout(function(){d3.interval(bubble_opacity_tick, 66);}, 12000);
 
 // Redraw when browser window resized.
 window.addEventListener("resize", redraw);
+function redraw() {
+    w = window.innerWidth;
+
+    x.range([0, w]);
+    svg.attr("width", w);
+    background.attr("width", w);
+    person_bubble_group.select("image").attr("x", d => (w * d.x_factor) - 28);
+    person_bubble_group.selectAll("circle").attr("cx", d => (w * d.x_factor));
+    person_bubble_group.selectAll("text").attr("x", d => (w * d.x_factor));
+    path.attr("d", area);
+    label.attr("x", w * .8);
+    point_value.attr("x", w * .8);
+    last_week.attr("x", w * .8);
+}
