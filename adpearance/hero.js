@@ -70,12 +70,15 @@ const people = [
 
 function redraw() {
     w = window.innerWidth;
+    const old_w = +(svg.attr("width"));
+    //const ratio = w/old_w;
+
     x.range([0, w]);
     svg.attr("width", w);
     background.attr("width", w);
     person_bubble_group.select("image").attr("x", d => (w * d.x_factor) - 28);
-    person_bubble_group.selectAll("cicle").attr("cx", d => (w * d.x_factor));
-    person_bubble_group.selectAll("text").attr("cx", d => (w * d.x_factor));
+    person_bubble_group.selectAll("circle").attr("cx", d => (w * d.x_factor));
+    person_bubble_group.selectAll("text").attr("x", d => (w * d.x_factor));
     label.attr("x", w * .8);
     point_value.attr("x", w * .8);
     last_week.attr("x", w * .8);
