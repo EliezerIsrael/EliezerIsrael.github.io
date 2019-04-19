@@ -70,8 +70,6 @@ const people = [
 
 function redraw() {
     w = window.innerWidth;
-    const old_w = +(svg.attr("width"));
-    //const ratio = w/old_w;
 
     x.range([0, w]);
     svg.attr("width", w);
@@ -131,15 +129,6 @@ const label = svg
     .attr("font-weight", "bold")
     .attr("fill", "white");
 
-/*
-const line = svg
-    .append("line")
-    .attr("x1", x(4))
-    .attr("y1", h / 2 + 20)
-    .attr("x2", x(4))
-    .attr("y2", y(point_val()) - 5)
-    .attr("stroke", "white");
-*/
 const point_value = svg
     .append("text")
     .attr("class", "pointval")
@@ -162,18 +151,6 @@ const last_week = svg
     .attr("font-size", "16px")
     .attr("font-weight", "bold")
     .attr("fill", background_color);
-
-/*
-const fifth = svg
-    .append("circle")
-    .attr("cx", x(4))
-    .attr("cy", y(point_val()))
-    .attr("r", 8)
-    .attr("stroke", "#4e8fdb")
-    .attr("stroke-opacity", "0.0")
-    .attr("stroke-width", "2")
-    .attr("fill", "none");
-*/
 
 const person_bubble_group = svg.selectAll("g.person")
     .data(people)
@@ -257,7 +234,6 @@ function area_tick() {
     y.domain([d3.min(values()) * .85, d3.max(values())]);
 
     const new_val = point_val();
-    const new_y = y(point_val());
 
     path
         .data(points)
@@ -280,18 +256,6 @@ function area_tick() {
           .duration(100)
           .style("fill", "#fff")
           .text(title());
-/*
-    fifth
-        .transition()
-          .duration(200)
-          .attr("stroke-opacity", 0.0)
-        .transition()
-          .delay(transition_duration)
-          .attr("cy", new_y)
-        .transition()
-          .duration(200)
-          .attr("stroke-opacity", 1.0);
-*/
 
     last_week
         .transition()
