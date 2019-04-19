@@ -7,8 +7,14 @@ const pause = 6500;
 
 const background_color = "#126bcd";
 
-// Array of objects
-// Each object with keys "title" and "values"
+// Data Points for area graph
+// Array of objects.  Each object is one state of graph.
+// Each object has keys "title" and "values" - an array of numbers
+
+// Graphs are totally responsive to this data.
+// There can be any number of objects, and any number of data points within "values".
+// It works best if each object has the same number of data points.
+
 const data = [{title: "website visits", values: [7060309, 7324365, 7656326, 6390242, 5945494, 5938188, 6191221]},
     {title: "qualified sales prospects", values: [12033, 14268, 16717, 16725, 15671, 15750, 16567]},
     {title: "leads saved", values: [1492, 1697, 2550, 2647, 2302, 2405, 2894]},
@@ -74,14 +80,14 @@ const background = svg.append("rect").attr("width", w).attr("height", h).attr("f
 
 ////  Data Manipulation  ////
 let current_graph = -1;
-const number_of_points = data[0].values.length;
-const values = () => (current_graph === -1) ? new Array(number_of_points).fill(0) : data[current_graph]["values"];
+const number_of_points = () => data[(current_graph === -1)?0:current_graph].values.length;
+const values = () => (current_graph === -1) ? new Array(number_of_points()).fill(0) : data[current_graph]["values"];
 const points = () => [values().map((y, i) => [i, y])];
 const title = () => (current_graph === -1) ? "" : data[current_graph]["title"];
 const point_val = () => values()[4];
 
 const x = d3.scaleLinear()
-    .domain([0, number_of_points - 1])
+    .domain([0, number_of_points() - 1])
     .range([0, w]);
 
 const y = d3.scaleLinear()
@@ -217,6 +223,7 @@ function area_tick() {
 
     current_graph = (current_graph === data.length - 1) ? 0 : current_graph + 1;
     y.domain([d3.min(values()) * .85, d3.max(values())]);
+    x.domain([0, number_of_points() - 1]);
 
     const new_val = point_val();
 
