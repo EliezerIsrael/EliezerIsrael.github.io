@@ -1,6 +1,6 @@
 
 const h = 500;
-const w = window.innerWidth;
+let w = window.innerWidth;  // Remove in favor of a call to redraw?
 
 const transition_duration = 1500;
 const pause = 6500;
@@ -15,46 +15,47 @@ const data = [{title: "website visits", values: [7060309, 7324365, 7656326, 6390
     {title: "dynamic emails sent", values: [173243, 193458, 205296, 216979, 198229, 202007, 215451]},
     {title: "inventory changes monitored", values: [520082, 469083, 480548, 786334, 567338, 639586, 884198]}];
 
+
 const people = [
     {
         text: ["What type of car", "is Liz looking for?"],
-        x: w * .10,
+        x_factor: .10,
         y: h * .55,
         img: "img/brunette_woman_png.png"
     },
     {
         text: ["Is Malcolm logged","in our CRM?"],
-        x: w * .15,
+        x_factor: .15,
         y: h * .1,
         img: "img/bald_man_png.png"
     },
     {
         text: ["What did Hannah", "search for last month?"],
-        x: w * .62,
+        x_factor: .62,
         y: h * .17,
         img: "img/shorthaired_woman_png.png"
     },
     {
         text: ["Did we return","Michael's call?"],
-        x: w * .9,
+        x_factor: .9,
         y: h * .5,
         img: "img/tan_man_png.png"
     },
     {
         text: ["What price range is Gina","searching within?"],
-        x: w * .4,
+        x_factor: .4,
         y: h * .35,
         img: "img/older_brunette_woman_png.png"
     },
     {
         text: ["What marketing channels are","most profitable this month?"],
-        x: w * .75,
+        x_factor: .75,
         y: h * .1,
         img: "img/glasses_man_png.png"
     },
     {
         text: ["How do our sales compare","to others in the area?"],
-        x: w * .90,
+        x_factor: .90,
         y: h * .25,
         img: "img/greyhaired_man_png.png"
     }
@@ -67,9 +68,22 @@ const people = [
     return o;
 });
 
+function redraw() {
+    w = window.innerWidth;
+    x.range([0, w]);
+    svg.attr("width", w);
+    background.attr("width", w);
+    person_bubble_group.select("image").attr("x", d => (w * d.x_factor) - 28);
+    person_bubble_group.selectAll("cicle").attr("cx", d => (w * d.x_factor));
+    person_bubble_group.selectAll("text").attr("cx", d => (w * d.x_factor));
+    label.attr("x", w * .8);
+    point_value.attr("x", w * .8);
+    last_week.attr("x", w * .8);
+}
+
 ////  Canvas  ////
 const svg = d3.select("body").append("svg").attr("width",w).attr("height",h);
-svg.append("rect").attr("width", w).attr("height", h).attr("fill", background_color);
+const background = svg.append("rect").attr("width", w).attr("height", h).attr("fill", background_color);
 
 ////  Data Manipulation  ////
 let current_graph = -1;
@@ -167,13 +181,13 @@ const person_bubble_group = svg.selectAll("g.person")
 person_bubble_group
     .append("image")
     .attr("xlink:href", d => d.img)
-    .attr("x", d => d.x - 28)
+    .attr("x", d => (w * d.x_factor) - 28)
     .attr("y", d => d.y - 28)
     .attr("width", 56)
     .attr("height", 56);
 person_bubble_group
     .append("circle")
-    .attr("cx", d => d.x)
+    .attr("cx", d => (w * d.x_factor))
     .attr("cy", d => d.y)
     .attr("r", "27")
     .attr("fill", "none")
@@ -182,7 +196,7 @@ person_bubble_group
     .attr("stroke-width", "2");
 person_bubble_group
     .append("circle")
-    .attr("cx", d => d.x)
+    .attr("cx", d => (w * d.x_factor))
     .attr("cy", d => d.y)
     .attr("r", "37")
     .attr("fill", "none")
@@ -193,7 +207,7 @@ person_bubble_group
     .append("text")
     .attr("class", "question")
     .attr("text-anchor", "middle")
-    .attr("x", d => d.x)
+    .attr("x", d => (w * d.x_factor))
     .attr("y", d => d.y + 40)
     .text(d => d.text[0])
     .attr("font-family", "sans-serif")
@@ -203,7 +217,7 @@ person_bubble_group
     .append("text")
     .attr("class", "question")
     .attr("text-anchor", "middle")
-    .attr("x", d => d.x)
+    .attr("x", d => (w * d.x_factor))
     .attr("y", d => d.y + 60)
     .text(d => d.text[1])
     .attr("font-family", "sans-serif")
@@ -297,3 +311,6 @@ svg.selectAll("g.person")
     .duration(8000)
     .attr("opacity", d => normalize_opacity(d.o));
 setTimeout(function(){d3.interval(bubble_opacity_tick, 66);}, 12000);
+
+// Redraw when browser window resized.
+window.addEventListener("resize", redraw);
