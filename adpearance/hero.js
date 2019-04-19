@@ -146,6 +146,7 @@ const last_week = svg
     .attr("font-weight", "bold")
     .attr("fill", background_color);
 
+/*
 const fifth = svg
     .append("circle")
     .attr("cx", x(4))
@@ -155,7 +156,7 @@ const fifth = svg
     .attr("stroke-opacity", "0.0")
     .attr("stroke-width", "2")
     .attr("fill", "none");
-
+*/
 
 const person_bubble_group = svg.selectAll("g.person")
     .data(people)
@@ -247,14 +248,8 @@ function area_tick() {
         .duration(transition_duration)
         .attr("d", area)
         .tween("fifth", function () {
-            //const iy = d3.interpolateNumber(old_y, new_y);
             const ival = d3.interpolateNumber(old_val, new_val);
-
-            return t => {
-                // line.attr("y2", iy(t) - 5);
-                point_value.text(ival(t).toLocaleString(undefined, {maximumFractionDigits: 0}));
-            }
-            //return t => console.log(i(t));
+            return t => point_value.text(ival(t).toLocaleString(undefined, {maximumFractionDigits: 0}));
         });
 
     label
@@ -268,7 +263,7 @@ function area_tick() {
           .duration(100)
           .style("fill", "#fff")
           .text(title());
-
+/*
     fifth
         .transition()
           .duration(200)
@@ -279,6 +274,7 @@ function area_tick() {
         .transition()
           .duration(200)
           .attr("stroke-opacity", 1.0);
+*/
 
     last_week
         .transition()
@@ -301,11 +297,3 @@ svg.selectAll("g.person")
     .duration(8000)
     .attr("opacity", d => normalize_opacity(d.o));
 setTimeout(function(){d3.interval(bubble_opacity_tick, 66);}, 12000);
-
-/*
-person_bubble_group
-    .transition()
-    .delay(4000)
-    .duration(8000)
-    .attr("opacity", 1.0);
-*/
