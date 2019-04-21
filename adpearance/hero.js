@@ -11,8 +11,7 @@ const initial_bubble_delay = 4000;    // (ms) Delay before bubbles fade in
 const initial_bubble_duration = 8000; // (ms) Length of initial bubble fade in
 const transition_duration = 1500;     // (ms) Duration of each active transition of area graph
 const background_color = "#126bcd";   // Background color
-
-
+const max_fade = .2;                  // (0..1) the lowest opacity value possible for a bubble
 
 /////////////////////////
 // Data for area graph //
@@ -148,7 +147,7 @@ const label = svg
     .attr("y", h / 2)
     .text("")
     .attr("text-anchor", "end")
-    .attr("font-family", "sans-serif")
+    .attr("font-family", "Montserrat, sans-serif")
     .attr("font-size", "22px")
     .attr("font-weight", "bold")
     .attr("fill", "white");
@@ -160,7 +159,7 @@ const point_value = svg
     .attr("y", h / 2 - 32)
     .text("0")
     .attr("text-anchor", "end")
-    .attr("font-family", "sans-serif")
+    .attr("font-family", "Montserrat, sans-serif")
     .attr("font-size", "40px")
     .attr("font-weight", "bold")
     .attr("fill", "white");
@@ -171,7 +170,7 @@ const last_week = svg
     .attr("y", h / 2 + 26)
     .text("last week")
     .attr("text-anchor", "end")
-    .attr("font-family", "sans-serif")
+    .attr("font-family", "Montserrat, sans-serif")
     .attr("font-size", "16px")
     .attr("font-weight", "bold")
     .attr("fill", background_color);
@@ -214,7 +213,8 @@ person_bubble_group
     .attr("x", d => (w * d.x_factor))
     .attr("y", d => (h * d.y_factor) + 40)
     .text(d => d.text[0])
-    .attr("font-family", "sans-serif")
+    .attr("font-family", "Montserrat, sans-serif")
+    .attr("font-weight", 500)
     .attr("font-size", "12px")
     .attr("fill", "#5286e3");
 person_bubble_group
@@ -224,7 +224,8 @@ person_bubble_group
     .attr("x", d => (w * d.x_factor))
     .attr("y", d => (h * d.y_factor) + 60)
     .text(d => d.text[1])
-    .attr("font-family", "sans-serif")
+    .attr("font-family", "Montserrat, sans-serif")
+    .attr("font-weight", 500)
     .attr("font-size", "12px")
     .attr("fill", "#5286e3");
 
@@ -233,7 +234,7 @@ person_bubble_group
 /////////////////////
 
 const unit = .1;        // How far each bubble moves, at each clock tick
-normalize_opacity  = d => Math.sin(d) / 4 + .75;
+normalize_opacity  = d => (Math.sin(d)/2+.5) * (1 - max_fade) + max_fade;
 function bubble_tick() {
     people.forEach(person => {
         person.dx = person.dx + (unit * Math.cos(person.t));
