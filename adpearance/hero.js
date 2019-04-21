@@ -11,7 +11,7 @@ const initial_bubble_delay = 4000;    // (ms) Delay before bubbles fade in
 const initial_bubble_duration = 8000; // (ms) Length of initial bubble fade in
 const transition_duration = 1500;     // (ms) Duration of each active transition of area graph
 const background_color = "#126bcd";   // Background color
-const max_fade = .2;                  // (0..1) the lowest opacity value possible for a bubble
+// const max_fade = .2;                  // (0..1) the lowest opacity value possible for a bubble
 
 /////////////////////////
 // Data for area graph //
@@ -306,8 +306,9 @@ svg.selectAll("g.person")
     .transition()
     .delay(initial_bubble_delay)
     .duration(initial_bubble_duration)
-    .attr("opacity", d => normalize_opacity(d.o));
-setTimeout(function(){d3.interval(bubble_opacity_tick, 66);}, initial_bubble_delay + initial_bubble_duration);
+    .attr("opacity", 1)    //d => normalize_opacity(d.o))
+;
+//setTimeout(function(){d3.interval(bubble_opacity_tick, 66);}, initial_bubble_delay + initial_bubble_duration);
 
 // Redraw when browser window resized.
 window.addEventListener("resize", redraw);
