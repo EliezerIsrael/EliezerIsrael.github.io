@@ -280,8 +280,8 @@ function area_tick() {
         .transition()
           .text("")
         .transition()
-          .delay(d3.max([transition_duration - 350, 0]))
-          .duration(100)
+          .delay(d3.max([transition_duration - 450, 0]))
+          .duration(300)
           .style("fill", "#fff")
           .text(title());
 
@@ -290,8 +290,8 @@ function area_tick() {
           .duration(200)
           .style("fill", background_color)
         .transition()
-          .delay(transition_duration + 200)
-          .duration(200)
+          .delay(transition_duration + 300)
+          .duration(300)
           .style("fill", "#04bcfc");
 
 }
