@@ -71,7 +71,7 @@ const people = [
     {
         text: ["What price range is Gina","searching within?"],
         x_factor: .4,
-        y_factor: .35,
+        y_factor: .1,
         img: "img/older_brunette_woman_png.png"
     },
     {
