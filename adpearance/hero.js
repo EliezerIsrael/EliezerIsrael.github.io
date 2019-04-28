@@ -11,7 +11,6 @@ const initial_bubble_delay = 4000;    // (ms) Delay before bubbles fade in
 const initial_bubble_duration = 8000; // (ms) Length of initial bubble fade in
 const transition_duration = 1500;     // (ms) Duration of each active transition of area graph
 const background_color = "#126bcd";   // Background color
-// const max_fade = .2;                  // (0..1) the lowest opacity value possible for a bubble
 
 /////////////////////////
 // Data for area graph //
@@ -88,8 +87,7 @@ const people = [
     }
 ].map(o => {
     o.t = Math.random() * 2 * Math.PI;  // Initial trajectory
-    o.o = Math.random() * 2 * Math.PI;  // Initial opacity
-    o.dt = Math.random() * .1 - .05;    // Change in trajectory & fade at each step
+    o.dt = Math.random() * .1 - .05;    // Change in trajectory at each step
     o.dx = 0;   // Accumulated change in X from start
     o.dy = 0;   // Accumulated change in Y from start
     return o;
@@ -234,7 +232,6 @@ person_bubble_group
 /////////////////////
 
 const unit = .1;        // How far each bubble moves, at each clock tick
-normalize_opacity  = d => (Math.sin(d)/2+.5) * (1 - max_fade) + max_fade;
 function bubble_tick() {
     people.forEach(person => {
         person.dx = person.dx + (unit * Math.cos(person.t));
@@ -244,14 +241,6 @@ function bubble_tick() {
     svg.selectAll("g.person")
         .data(people)
         .attr("transform", d => `translate(${d.dx},${d.dy})`);
-}
-function bubble_opacity_tick() {
-    people.forEach(person => {
-        person.o = person.o + person.dt;
-    });
-    svg.selectAll("g.person")
-        .data(people)
-        .attr("opacity", d => normalize_opacity(d.o));
 }
 
 function area_tick() {
@@ -306,9 +295,8 @@ svg.selectAll("g.person")
     .transition()
     .delay(initial_bubble_delay)
     .duration(initial_bubble_duration)
-    .attr("opacity", 1)    //d => normalize_opacity(d.o))
+    .attr("opacity", 1)
 ;
-//setTimeout(function(){d3.interval(bubble_opacity_tick, 66);}, initial_bubble_delay + initial_bubble_duration);
 
 // Redraw when browser window resized.
 window.addEventListener("resize", redraw);
