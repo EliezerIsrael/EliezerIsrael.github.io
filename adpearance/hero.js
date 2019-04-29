@@ -10,6 +10,7 @@ const pause = 6500;                   // (ms) Time between transitions of area g
 const initial_bubble_delay = 4000;    // (ms) Delay before bubbles fade in
 const initial_bubble_duration = 8000; // (ms) Length of initial bubble fade in
 const transition_duration = 1500;     // (ms) Duration of each active transition of area graph
+const movement_unit = .1;             // How far each bubble moves, at each clock tick
 const background_color = "#126bcd";   // Background color
 
 /////////////////////////
@@ -93,6 +94,7 @@ const people = [
     return o;
 });
 
+
 /////////////////////
 //      Canvas     //
 /////////////////////
@@ -105,13 +107,12 @@ const wave_image = svg.append("image").attr("x", 0).attr("y", h * graph_top).att
 const network_image = svg.append("image").attr("x", 0).attr("y", 0).attr("height", h).attr("width", w)
     .attr("opacity", 0.5).attr("xlink:href","img/network.svg");
 
-let current_graph = -1;
-
 
 /////////////////////////////////////
 ////  Data Processing Functions  ////
 /////////////////////////////////////
 
+let current_graph = -1;
 const number_of_points = () => data[(current_graph === -1)?0:current_graph].values.length;
 const values = () => (current_graph === -1) ? new Array(number_of_points()).fill(0) : data[current_graph]["values"];
 const points = () => values().map((y, i) => [i, y]);
@@ -137,6 +138,7 @@ const area = d3.area()
 ////  Initial Render  ////
 //////////////////////////
 
+// Area Graph
 const path = svg.selectAll("path")
     .data(wrapped_points)
     .enter()
@@ -144,6 +146,7 @@ const path = svg.selectAll("path")
     .attr("d", area)
     .attr("fill", "#fff");
 
+// Points on Area Graph
 const datapoints = svg.selectAll("circle.datapoint")
     .data(points)
     .enter()
@@ -156,6 +159,7 @@ const datapoints = svg.selectAll("circle.datapoint")
     .attr("stroke", "white")
     .attr("stroke-width", 2);
 
+// Label for Data Value
 const label = svg
     .append("text")
     .attr("class", "label")
@@ -168,6 +172,7 @@ const label = svg
     .attr("font-weight", "bold")
     .attr("fill", "white");
 
+// Current Data Value
 const point_value = svg
     .append("text")
     .attr("class", "pointval")
@@ -180,6 +185,7 @@ const point_value = svg
     .attr("font-weight", "bold")
     .attr("fill", "white");
 
+// "last week"
 const last_week = svg
     .append("text")
     .attr("x", w * .8)
@@ -191,6 +197,7 @@ const last_week = svg
     .attr("font-weight", "bold")
     .attr("fill", background_color);
 
+// Floating Bubbles
 const person_bubble_group = svg.selectAll("g.person")
     .data(people)
     .enter()
@@ -249,11 +256,11 @@ person_bubble_group
 ////  Animation  ////
 /////////////////////
 
-const unit = .1;        // How far each bubble moves, at each clock tick
+// Called for each frame of bubble animation
 function bubble_tick() {
     people.forEach(person => {
-        person.dx = person.dx + (unit * Math.cos(person.t));
-        person.dy = person.dy + (unit * Math.sin(person.t));
+        person.dx = person.dx + (movement_unit * Math.cos(person.t));
+        person.dy = person.dy + (movement_unit * Math.sin(person.t));
         person.t = person.t + person.dt;
     });
     svg.selectAll("g.person")
@@ -261,6 +268,7 @@ function bubble_tick() {
         .attr("transform", d => `translate(${d.dx},${d.dy})`);
 }
 
+// Called for each frame of area chart animation
 function area_tick() {
     const old_val = point_val();
 
@@ -310,10 +318,9 @@ function area_tick() {
 
 }
 
-// The process of all animations is controlled here.
-
-setTimeout(area_tick, initial_area_delay);  // Delay before initial transition of area graph
-d3.interval(area_tick, pause);              // All subsequent transitions of area graph
+// Fade in animations and set intervals for animations frames.
+setTimeout(area_tick, initial_area_delay);
+d3.interval(area_tick, pause);
 d3.interval(bubble_tick, 66);
 svg.selectAll("g.person")
     .data(people)
