@@ -109,7 +109,8 @@ let current_graph = -1;
 
 const number_of_points = () => data[(current_graph === -1)?0:current_graph].values.length;
 const values = () => (current_graph === -1) ? new Array(number_of_points()).fill(0) : data[current_graph]["values"];
-const points = () => [values().map((y, i) => [i, y])];
+const points = () => values().map((y, i) => [i, y]);
+const wrapped_points = () => [points()];
 const title = () => (current_graph === -1) ? "" : data[current_graph]["title"];
 const point_val = () => values()[4];
 
@@ -132,11 +133,23 @@ const area = d3.area()
 //////////////////////////
 
 const path = svg.selectAll("path")
-    .data(points)
+    .data(wrapped_points)
     .enter()
     .append("path")
     .attr("d", area)
     .attr("fill", "#fff");
+
+const datapoints = svg.selectAll("circle.datapoint")
+    .data(points)
+    .enter()
+    .append("circle")
+    .attr("class", "datapoint")
+    .attr("cx", d => x(d[0]))
+    .attr("cy", d => y(d[1]))
+    .attr("r", 5)
+    .attr("fill", "blue")
+    .attr("stroke", "white")
+    .attr("stroke-width", 2);
 
 const label = svg
     .append("text")
@@ -253,7 +266,7 @@ function area_tick() {
     const new_val = point_val();
 
     path
-        .data(points)
+        .data(wrapped_points)
         .transition()
         .duration(transition_duration)
         .attr("d", area)
@@ -261,6 +274,13 @@ function area_tick() {
             const ival = d3.interpolateNumber(old_val, new_val);
             return t => point_value.text(ival(t).toLocaleString(undefined, {maximumFractionDigits: 0}));
         });
+
+    datapoints
+        .data(points)
+        .transition()
+        .duration(transition_duration)
+        .attr("cx", d => x(d[0]))
+        .attr("cy", d => y(d[1]));
 
     label
         .transition()
