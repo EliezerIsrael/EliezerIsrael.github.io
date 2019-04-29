@@ -335,7 +335,12 @@ function redraw() {
     person_bubble_group.selectAll("circle").attr("cx", d => (w * d.x_factor));
     person_bubble_group.selectAll("text").attr("x", d => (w * d.x_factor));
     path.attr("d", area);
+    datapoints
+        .attr("cx", d => x(d[0]))
+        .attr("cy", d => y(d[1]));
     label.attr("x", w * .8);
     point_value.attr("x", w * .8);
     last_week.attr("x", w * .8);
+    wave_image.attr("width", w);
+    network_image.attr("width", w);
 }
