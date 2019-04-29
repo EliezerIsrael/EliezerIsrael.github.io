@@ -100,6 +100,11 @@ const people = [
 let w = window.innerWidth;
 const svg = d3.select("body").append("svg").attr("width",w).attr("height",h);
 const background = svg.append("rect").attr("width", w).attr("height", h).attr("fill", background_color);
+const wave_image = svg.append("image").attr("x", 0).attr("y", h * graph_top).attr("height", h - (h * graph_top)).attr("width", w)
+    .attr("xlink:href","img/waves.svg").attr("preserveAspectRatio", "none");
+const network_image = svg.append("image").attr("x", 0).attr("y", 0).attr("height", h).attr("width", w)
+    .attr("opacity", 0.5).attr("xlink:href","img/network.svg");
+
 let current_graph = -1;
 
 
